@@ -2,6 +2,15 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    "Missing Supabase environment variables. Please check your .env.local file."
+  );
+}
+
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get('code');
@@ -9,10 +18,10 @@ export async function GET(request: Request) {
     const next = searchParams.get('next') ?? '/';
 
     if (code) {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            supabaseUrl,
+            supabaseKey,
             {
                 cookies: {
                     get(name: string) {

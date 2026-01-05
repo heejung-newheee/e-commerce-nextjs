@@ -5,7 +5,8 @@ import { supabase } from '@/lib/supabase/supabase';
 export const signUpUser = async (values: RegisterInput) => {
     const { name, email, phone, role, password } = values;
 
-    const { data, error } = await supabase.auth.signUp({
+    const client = await supabase();
+    const { data, error } = await client.auth.signUp({
         email,
         password,
         options: {
@@ -31,12 +32,14 @@ export const signUpUser = async (values: RegisterInput) => {
 };
 
 export const userUpdate = async (user: UserUpdateType) => {
-    const { error } = await supabase.from('users').insert(user);
+    const client = await supabase();
+    const { error } = await client.from('users').insert(user);
     if (error !== null) throw new Error(error.message);
 };
 
 export const signInUser = async ({ email, password }: { email: string; password: string }) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const client = await supabase();
+    const { error } = await client.auth.signInWithPassword({
         email,
         password
     });
@@ -44,14 +47,16 @@ export const signInUser = async ({ email, password }: { email: string; password:
 };
 
 export const signOut = async () => {
-    await supabase.auth.signOut();
+    const client = await supabase();
+    await client.auth.signOut();
 };
 
 export const getAuthSession = async () => {
+    const client = await supabase();
     const {
         data: { session },
         error
-    } = await supabase.auth.getSession();
+    } = await client.auth.getSession();
     if (!session) {
         console.log('로그인 상태가 아님');
     }
@@ -62,7 +67,8 @@ export const getAuthSession = async () => {
     return session;
 };
 export const getUser = async (email: string) => {
-    const { data } = await supabase.from('users').select().eq('email', email).single();
+    const client = await supabase();
+    const { data } = await client.from('users').select().eq('email', email).single();
     return data;
 };
 

@@ -1,7 +1,12 @@
-import { Database } from '@/lib/supabase/database.types';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "./server";
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Server Component나 Server Action에서 사용
+// 사용법:
+// import { supabase } from "@/lib/supabase/supabase";
+// 
+// export default async function Page() {
+//   const client = await supabase();
+//   const { data } = await client.from('todos').select();
+//   return <div>{data}</div>;
+// }
+export const supabase = createClient;
